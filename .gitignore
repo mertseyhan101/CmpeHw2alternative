@@ -1,0 +1,6 @@
+*__pycache__
+ringmaster
+my-outputs
+*.DS_Store
+.idea*
+.vscode*

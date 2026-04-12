@@ -1,0 +1,45 @@
+name: Grade
+
+on: 
+  workflow_dispatch
+
+jobs:
+  grade:
+    runs-on: ubuntu-latest
+    container: 
+      image: gokceuludogan/cmpe230_spring25:latest
+      options: --user root
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Verify Test Cases Directory
+        run: |
+          if [ -d "test-cases" ]; then
+            echo "✅ test-cases directory exists."
+          else
+            echo "❌ test-cases directory is missing!"
+            exit 1
+          fi
+      
+      - name: Run testcases
+        run: 
+          make testcases
+
+      - name: Grade
+        run: |
+          make grade -s > grade.txt
+          cat grade.txt
+
+      - name: Save Grade to Summary and Environment
+        run: |
+          echo "Grade Summary:" >> $GITHUB_STEP_SUMMARY
+          cat grade.txt >> $GITHUB_STEP_SUMMARY
+          {
+            echo "output<<EOF"
+            cat grade.txt
+            echo "EOF"
+          } >> $GITHUB_ENV
