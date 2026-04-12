@@ -274,4 +274,130 @@ If AI tools were used:
 \item confirmation that all technical content is understood.
 \end{itemize}
 
+\newpage
+
+\section*{Appendix: Bad vs Good Report Examples}
+
+This section illustrates the difference between weak and strong reports.
+
+\subsection*{Example 1: Parsing Logic}
+
+\textbf{Bad:}
+\begin{quote}
+We parse the input string and extract the values. We split by spaces and hyphens and convert numbers.
+\end{quote}
+
+\textbf{Why this is bad:}
+\begin{itemize}
+\item No mention of registers
+\item No explanation of how parsing actually works
+\item Could be written without implementing anything
+\end{itemize}
+
+\textbf{Good:}
+\begin{quote}
+We parse the input using a pointer stored in \texttt{rsi}, which traverses the input buffer character by character. 
+Digits are accumulated into integers using \texttt{rax = rax * 10 + (char - '0')}. 
+Hyphens (`-`) are used as field separators and trigger storing the parsed value into the corresponding array. 
+Spaces indicate transition to the next process descriptor. 
+
+We ensure correctness by resetting the accumulator register after each field and advancing the pointer carefully to avoid skipping characters.
+\end{quote}
+
+\subsection*{Example 2: State Representation}
+
+\textbf{Bad:}
+\begin{quote}
+We store processes in arrays and update their values during execution.
+\end{quote}
+
+\textbf{Why this is bad:}
+\begin{itemize}
+\item No structure
+\item No memory layout
+\item No connection to execution
+\end{itemize}
+
+\textbf{Good:}
+\begin{quote}
+Each process is represented using parallel arrays:
+\texttt{proc\_id[]}, \texttt{burst[]}, \texttt{arrival[]}, and \texttt{remaining[]}. 
+
+The base address of each array is stored in registers (\texttt{rbx}, \texttt{rcx}, etc.), and process index \texttt{i} is used with scaled indexing to access elements. 
+
+This design simplifies iteration and allows efficient comparisons when selecting the next process. 
+
+\end{quote}
+
+\subsection*{Example 3: Scheduling Logic}
+
+\textbf{Bad:}
+\begin{quote}
+We implemented SRTF by selecting the process with the smallest remaining time at each step.
+\end{quote}
+
+\textbf{Why this is bad:}
+\begin{itemize}
+\item Just restates the algorithm
+\item No implementation detail
+\end{itemize}
+
+\textbf{Good:}
+\begin{quote}
+At each clock cycle, we iterate over all processes and compare their remaining times. 
+The current minimum is stored in \texttt{r8}, and the index of the selected process is stored in \texttt{r9}. 
+
+For each process:
+\begin{itemize}
+\item we check if it has arrived,
+\item we skip completed processes (remaining = 0),
+\item we update the minimum if a smaller remaining time is found.
+\end{itemize}
+
+After selection, the chosen process's remaining time is decremented and its ID is written into the output buffer. 
+
+\end{quote}
+
+\subsection*{Example 4: Register Usage}
+
+\textbf{Bad:}
+\begin{quote}
+We used registers to store temporary values.
+\end{quote}
+
+\textbf{Why this is bad:}
+\begin{itemize}
+\item meaningless
+\item no mapping
+\end{itemize}
+
+\textbf{Good:}
+\begin{quote}
+We use:
+\begin{itemize}
+\item \texttt{rsi} as input pointer,
+\item \texttt{rdi} as output buffer pointer,
+\item \texttt{rcx} as loop counter,
+\item \texttt{r8} for current minimum remaining time,
+\item \texttt{r9} for selected process index.
+\end{itemize}
+
+Registers are reused carefully, and critical values are preserved across loops to prevent corruption.
+\end{quote}
+
+\subsection*{Summary}
+
+Strong reports:
+\begin{itemize}
+\item explain \textbf{how}, not just \textbf{what}
+\item refer to registers, memory, and control flow
+\item include concrete details and examples
+\end{itemize}
+
+Weak reports:
+\begin{itemize}
+\item restate the assignment
+\item avoid implementation details
+\item could be written without coding the project
+\end{itemize}
 \end{document}
