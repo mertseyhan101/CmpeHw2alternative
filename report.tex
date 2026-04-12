@@ -1,0 +1,277 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+
+% Assembly style
+\lstdefinestyle{AsmStyle}{
+    language={[x86masm]Assembler},
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!40!black},
+    numbers=left,
+    numberstyle=\tiny,
+    breaklines=true,
+    frame=single
+}
+
+\title{Project 2 Report: \texttt{schedsim}\\
+\large CMPE 230 Systems Programming -- Spring 2026}
+
+\author{
+Student 1 Name, Student 1 ID \\
+Student 2 Name, Student 2 ID
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Report Guidelines}
+
+This report must explain \textbf{how your assembly program works internally}.
+
+Avoid generic statements. Focus on:
+\begin{itemize}
+\item how parsing is implemented at register level,
+\item how program state is stored in memory,
+\item how scheduling decisions are computed,
+\item how control flow is structured in assembly.
+\end{itemize}
+
+
+\section{Project Overview}
+
+Briefly describe:
+\begin{itemize}
+\item what your scheduler does,
+\item supported algorithms (FCFS, SJF, SRTF, PF, RR),
+\item overall execution flow from input to output.
+\end{itemize}
+
+
+\section{Parsing Logic}
+
+\subsection{Input Processing Strategy}
+
+Explain how you parse the single input line:
+
+\begin{itemize}
+\item how tokens are separated (spaces, hyphens),
+\item how algorithm type is detected,
+\item how numeric values are parsed from characters.
+\end{itemize}
+
+\subsection{Register-Level Parsing Design}
+
+Describe explicitly:
+
+\begin{itemize}
+\item which registers hold pointers (e.g., input buffer),
+\item which registers hold temporary numeric values,
+\item how digits are accumulated into integers,
+\item how delimiters (' ', '-') are handled.
+\end{itemize}
+
+Explain how your parsing avoids corruption and maintains correctness.
+
+\section{State Representation (Memory Layout)}
+
+Explain how all scheduling data is stored.
+
+\subsection{Process Representation}
+
+Describe how each process is represented:
+
+\begin{itemize}
+\item ID (character),
+\item burst time,
+\item arrival time,
+\item remaining time,
+\item priority (if applicable).
+\end{itemize}
+
+Explain whether you used:
+\begin{itemize}
+\item arrays,
+\item structs (manual layout),
+\item separate parallel arrays.
+\end{itemize}
+
+\subsection{Global State}
+
+Explain:
+\begin{itemize}
+\item current time,
+\item ready queue / process list,
+\item output buffer,
+\item counters (remaining processes).
+\end{itemize}
+
+
+\section{Register Usage Strategy}
+
+Clearly document your register design:
+
+\begin{itemize}
+\item which registers are used for:
+    \begin{itemize}
+    \item loop counters,
+    \item pointers,
+    \item current process index,
+    \item temporary computations,
+    \end{itemize}
+\item which registers are preserved across function calls (if any),
+\item how you avoid accidental overwrites.
+\end{itemize}
+
+If you used conventions (caller-saved / callee-saved), explain them.
+
+\section{Scheduling Logic}
+
+\subsection{Clock Cycle Simulation}
+
+Explain how one time step is executed:
+
+\begin{itemize}
+\item how eligible processes are determined,
+\item how the next process is selected,
+\item how output is appended,
+\item how state is updated.
+\end{itemize}
+
+\subsection{Algorithm Implementations}
+
+Briefly explain each:
+
+\begin{itemize}
+\item FCFS: arrival-based ordering
+\item SJF: sorting or selection by burst
+\item SRTF: per-cycle minimum remaining time
+\item PF: priority + tie-breaking
+\item RR: queue rotation + quantum handling
+\end{itemize}
+
+Focus on differences in control flow and data updates.
+
+\section{Control Flow Design}
+
+Describe how your assembly program is structured:
+
+\begin{itemize}
+\item main loop (clock cycle loop),
+\item parsing phase,
+\item scheduling phase,
+\item output phase,
+\item termination condition.
+\end{itemize}
+
+Mention use of:
+\begin{itemize}
+\item labels,
+\item jumps (conditional / unconditional),
+\item loop patterns.
+\end{itemize}
+
+
+\section{Representative Code Snippet}
+
+\begin{lstlisting}[style=AsmStyle]
+# Example snippet
+\end{lstlisting}
+
+Explain:
+\begin{itemize}
+\item what the code does,
+\item which registers are used,
+\item how control flow works,
+\item why it is correct.
+\end{itemize}
+
+\section{Testing and Debugging}
+
+\subsection{Testing Strategy}
+
+\begin{itemize}
+\item sample inputs,
+\item edge cases (ties, idle CPU, preemption),
+\item manual vs automated testing.
+\end{itemize}
+
+\subsection{Debugging Approach}
+
+\begin{itemize}
+\item print-based debugging,
+\item register inspection,
+\item step-by-step tracing.
+\end{itemize}
+
+\subsection{Edge Cases}
+
+Examples:
+
+\begin{itemize}
+\item multiple arrivals at same time,
+\item identical priorities,
+\item quantum partially used (RR),
+\item CPU idle periods.
+\end{itemize}
+
+\section{Course Concepts}
+
+Relate your implementation to course topics:
+
+\subsection{Memory and Data Layout}
+
+How memory is organized and accessed.
+
+\subsection{Registers and Low-Level Computation}
+
+How computation is performed without high-level abstractions.
+
+\subsection{Control Flow and Branching}
+
+How loops and decisions are implemented.
+
+\subsection{Parsing Without Libraries}
+
+Manual string processing in assembly.
+
+\subsection{Tradeoffs}
+
+\begin{itemize}
+\item simplicity vs efficiency,
+\item readability vs performance,
+\item static vs dynamic design.
+\end{itemize}
+
+\section{Conclusion}
+
+Summarize:
+
+\begin{itemize}
+\item strongest design decision,
+\item biggest challenge,
+\item possible improvements.
+\end{itemize}
+
+\section*{AI Usage Statement}
+
+The report must be written by you.
+
+If AI tools were used:
+\begin{itemize}
+\item which tools,
+\item for what purpose,
+\item confirmation that all technical content is understood.
+\end{itemize}
+
+\end{document}
