@@ -5,8 +5,11 @@ OUTPUT_DIR=my-outputs
 
 all: $(EXEC)
 
-$(EXEC): $(SRC)
-	gcc -nostartfiles -o $(EXEC) $(SRC)
+$(EXEC): $(OBJ)
+	ld -o $(EXEC) $(OBJ)
+
+$(OBJ): $(SRC)
+	as -o $(OBJ) $(SRC)
 
 testcases: $(EXEC)
 	@echo "Running test cases..."
