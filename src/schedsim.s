@@ -11,8 +11,11 @@ rr_q:           .space 4096 # Circular buffer for RR queue (1024 * 4 bytes)
 
 .section .text
 .global _start
+.global start
+
 
 _start:
+start:
     # 1. Read input from stdin
     mov $0, %eax
     mov $0, %edi
@@ -458,3 +461,4 @@ sim_done:
     mov $60, %eax            # sys_exit
     xor %edi, %edi
     syscall
+    
