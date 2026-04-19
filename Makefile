@@ -1,5 +1,6 @@
 EXEC=schedsim
 SRC=src/schedsim.s
+OBJ=src/schedsim.o
 TEST_DIR=test-cases
 OUTPUT_DIR=my-outputs
 
@@ -25,5 +26,5 @@ grade: $(EXEC)
 	python3 test/grader.py ./$(EXEC) $(TEST_DIR)
 
 clean:
-	rm -f $(EXEC)
+	rm -f $(EXEC) $(OBJ)
 	rm -rf $(OUTPUT_DIR)
