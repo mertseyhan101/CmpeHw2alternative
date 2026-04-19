@@ -20,4 +20,4 @@ python3 test/checker.py <executable> <input_file> <output_file> <expected_output
 * Run the following commands to grade your the program with given paths.
 ```
 python3 test/grader.py <executable-path> <test-cases-path>
-```
+```# CmpeHw2alternative
